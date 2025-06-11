@@ -1,0 +1,26 @@
+### 🔐 Register doctor
+POST http://localhost:4000/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "firstName": "Alejandro",
+  "lastName": "Ramírez",
+  "email": "alejandro@example.com",
+  "password": "123456",
+  "specialty": "Pediatra",
+  "phone": "555-0000",
+  "role": "doctor"
+}
+
+### 🔑 Login doctor
+POST http://localhost:4000/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "juan@example.com",
+  "password": "123456"
+}
+
+### 👤 Get profile protected
+GET http://localhost:4000/api/v1/auth/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjcwNjM1OWMyLTdjNWUtNDQ5ZS1hMjUzLWY1NDMxNjBhYzJlNSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NDk2MDQ2NzAsImV4cCI6MTc0OTc3NzQ3MH0.m_wcscF8C3QyPQy5amuqfHwZfSOVjaMDvbISU6zealo

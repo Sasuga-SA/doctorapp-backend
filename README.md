@@ -1,11 +1,11 @@
-### 📝 Quick-start Guide
+# 📝 Quick-start Guide
 ---
 
 ## 1 🌐 Clone the repo
 
 ```bash
-git clone https://github.com/<your-user>/doctor-budget-appointment-manager.git
-cd doctor-budget-appointment-manager
+git clone git@github.com:Sasuga-SA/doctorapp-backend.git
+cd doctorapp-backend
 ```
 
 ---
@@ -23,9 +23,10 @@ cd doctor-budget-appointment-manager
 
 ## 3 📂 Environment variables
 
-Each microservice ships a sample file. Copy it, then adjust credentials **once**:
+Each microservice and Docker ships a sample file. Copy it, then adjust credentials **once**:
 
 ```bash
+cp .env.example .env
 cp services/appointment-service/.env.example services/appointment-service/.env
 cp services/finance-service/.env.example      services/finance-service/.env
 cp services/inventory-service/.env.example    services/inventory-service/.env
@@ -85,9 +86,29 @@ curl http://localhost:4002/api/v1/budgets
 
 If you get `[]` or `200 OK` responses, the services are up.
 
+--- 
+
+## IMPORTANT:
+
+**You are currently inside a Docker container. To access the terminal, use the following command:**
+
+```bash
+docker compose exec <microservice-name> sh
+```
+
+For example to test the microservice appointment-service
+```bash
+docker compose exec appointment-service sh
+```
+
 ---
 
-## 6 ✔️ Commit-time quality gate
+
+# 📚 Test and format
+---
+
+
+## 1 ✔️ Commit-time quality gate
 
 Before pushing code:
 
@@ -99,8 +120,11 @@ npm test       # run unit tests
 > **Tip:** add a pre-commit hook (Husky or lefthook) so `lint` + `test` run automatically.
 
 ---
+## 2 🌳 Seeds 
 
-## 7 🌳 Commit message best practices
+
+
+## 2 🖱️ Commit message best practices
 
 | Rule                                                           | Example                            |
 | -------------------------------------------------------------- | ---------------------------------- |
@@ -124,6 +148,17 @@ under DB seed of 50 k appointments.
 Following these guidelines keeps the history readable and makes changelog generation (Conventional Commits, semantic-release) effortless.
 
 ---
+
+## 3 📖 Extensions recommend to VSC 
+
+🔨 **ESLint** → Encuentra y corrige errores automáticamente.  
+💅 **Prettier** → Formatea tu código con un solo guardado.  
+⚙️ **EditorConfig** → Mantén consistencia entre equipos y editores.  
+📝 **Conventional Commits** → Estandariza mensajes de commit.  
+✅ **TODO Highlights** → No dejes tareas pendientes en el código.  
+✨ **ES6 Snippets** → Atajos para escribir código rápido.  
+🚀 **Express Snippets** → Agiliza la creación de endpoints.  
+🌐 **REST Client** → Prueba APIs sin salir de VSCode.
 
 That’s it!
 Clone → configure `.env` → `docker compose up` → lint & test before every commit → clean, traceable Git history. Happy coding! 🚀
