@@ -51,7 +51,7 @@ Enter the microservice to develop
 
 ```bash
 cd .\service\<microservice>
-npm init
+npm install
 ```
 Back to root
 
