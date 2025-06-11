@@ -27,7 +27,7 @@ Each microservice and Docker ships a sample file. Copy it, then adjust credentia
 
 ```bash
 cp .env.example .env
-cp services/auth-service/.env.example services/appointment-service/.env
+cp services/auth-service/.env.example services/auth-service/.env
 ```
 
 Typical values (`auth-service/.env`):
