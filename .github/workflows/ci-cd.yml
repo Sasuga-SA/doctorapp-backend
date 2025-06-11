@@ -42,13 +42,13 @@ jobs:
         with:
           node-version: '20'
 
-      - name: 📦 Install dependencies (appointment-service)
-        working-directory: ./services/appointment-service
+      - name: 📦 Install dependencies (auth-service)
+        working-directory: ./services/auth-service
         run: npm install
 
-      - name: 🧪 Run tests (appointment-service)
-        working-directory: ./services/appointment-service
+      - name: 🧪 Run tests (auth-service)
+        working-directory: ./services/auth-service
         run: npm test
 
       - name: 🐳 Build Docker image
-        run: docker build -t appointment-service ./services/appointment-service
+        run: docker build -t auth-service ./services/auth-service
