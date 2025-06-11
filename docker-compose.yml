@@ -1,0 +1,48 @@
+services:
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  auth-service:
+    build: ./services/auth-service
+    volumes:
+      - ./services/auth-service:/usr/src/app
+    env_file: ./services/auth-service/.env
+    depends_on: [postgres]
+    ports:
+      - '4000:4000'
+
+  # appointment-service:
+  #   build: ./services/appointment-service
+  #   volumes:
+  #     - ./services/appointment-service:/usr/src/app
+  #   env_file: ./services/appointment-service/.env
+  #   depends_on: [postgres]
+  #   ports:
+  #     - '4001:4001'
+
+
+#  finance-service:
+#    build: ./services/finance-service
+#    env_file: ./services/finance-service/.env
+#    depends_on: [postgres]
+#    ports:
+#      - '4002:4002'
+
+#  inventory-service:
+#    build: ./services/inventory-service
+#    env_file: ./services/inventory-service/.env
+#    depends_on: [postgres]
+#    ports:
+#      - '4003:4003'
+
+volumes:
+  pgdata:

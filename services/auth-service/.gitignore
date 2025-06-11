@@ -1,0 +1,9 @@
+# node + logs
+node_modules/
+.env
+dist/
+coverage/
+*.log
+
+# editor
+.vscode/
