@@ -48,6 +48,20 @@ JWT_SECRET=supersecret
 
 ## 4 🐳 Launch the stack
 
+Enter the microservice to develop
+
+
+```bash
+cd .\service\<microservice>
+npm init
+```
+Back to root
+
+```bash
+cd ../..
+```
+and
+
 ```bash
 docker compose up --build
 ```
