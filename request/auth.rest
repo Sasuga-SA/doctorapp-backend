@@ -1,26 +1,56 @@
 ### 🔐 Register doctor
-POST http://localhost:4000/api/v1/auth/register
+POST {{baseUrlAuth}}/register
 Content-Type: application/json
 
 {
   "firstName": "Alejandro",
-  "lastName": "Ramírez",
-  "email": "alejandro@example.com",
-  "password": "123456",
+  "lastName":  "Sanchez",
+  "email":     "{{email}}",
+  "password":  "{{pwd}}",
   "specialty": "Pediatra",
-  "phone": "555-0000",
-  "role": "doctor"
+  "phone":     "1234567",
+  "role":      "doctor",
+  "organization": "Clínica Santa María"
 }
 
+
+### Verify e-mail  (put here token copy of register)
+@verifyToken = 8d4be4fb0cc0453e735fb5daadb35305b84f7cd341a20ab08146f7a793a57e4d
+
+GET {{baseUrlAuth}}/verify-email?token={{verifyToken}}
+
+
 ### 🔑 Login doctor
-POST http://localhost:4000/api/v1/auth/login
+POST {{baseUrlAuth}}/login
 Content-Type: application/json
 
 {
-  "email": "juan@example.com",
-  "password": "123456"
+  "email":     "{{email}}",
+  "password":  "{{pwd}}"
 }
 
 ### 👤 Get profile protected
-GET http://localhost:4000/api/v1/auth/profile
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjcwNjM1OWMyLTdjNWUtNDQ5ZS1hMjUzLWY1NDMxNjBhYzJlNSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NDk2MDQ2NzAsImV4cCI6MTc0OTc3NzQ3MH0.m_wcscF8C3QyPQy5amuqfHwZfSOVjaMDvbISU6zealo
+GET {{baseUrlAuth}}/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZlMDBmMzJjLWNmZTMtNDA1Zi04ZDVlLWY5NTkwMjAzYTdjZCIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NTA3MzQwMjYsImV4cCI6MTc1MDkwNjgyNn0.8xQygwd2buCb1AKkmuCqH_h9b5C3iOvItxF4oCxkmm0
+
+
+### Forgot password
+POST {{baseUrlAuth}}/forgot-password
+Content-Type: application/json
+
+{
+  "email": "{{email}}"
+}
+
+### 5. Reset contraseña  (copia token de e-mail de reset)
+@resetToken = 236250c7958f136e082ee9da3ae3e5abc9b676e129cc97aeb8532cd660ccf645
+
+POST {{baseUrlAuth}}/reset-password
+Content-Type: application/json
+
+{
+  "token":    "{{resetToken}}",
+  "password": "NuevaClaveSegura123"
+}
+
+

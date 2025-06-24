@@ -8,13 +8,12 @@ const PORT = process.env.PORT || 4000;
 (async () => {
   try {
     await sequelize.authenticate();
-    await syncDb(); 
+    await syncDb();
     app.listen(PORT, () =>
-      console.log(`🩺 Auth-Service corriendo en http://localhost:${PORT}`)
+      console.log(`🩺 Auth-Service corriendo en http://localhost:${PORT}`),
     );
   } catch (err) {
     console.error("❌ Error al iniciar el servidor:", err);
     process.exit(1);
   }
 })();
-

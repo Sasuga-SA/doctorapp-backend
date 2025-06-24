@@ -1,0 +1,9 @@
+{
+  "rest-client.environmentVariables": {
+    "local": {
+      "baseUrlAuth": "http://localhost:4000/api/v1/auth",
+      "email":  "aleja@example.com",
+      "pwd":    "12345678"
+    }
+  }
+}

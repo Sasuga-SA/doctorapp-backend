@@ -1,0 +1,30 @@
+### 🔐 Register doctor
+POST {{baseUrl}}/register
+Content-Type: application/json
+
+{
+  "firstName": "Rocio",
+  "lastName": "Rojas",
+  "email":     "{{email}}",
+  "password":  "{{pwd}}",
+  "specialty": "Pediatra",
+  "phone": "1234567",
+  "role": "doctor",
+  "organization": "Clínica Santa María"
+}
+
+### 🔑 Login doctor
+POST http://localhost:4000/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "rocio1@example.com",
+  "password": "12345678"
+}
+
+### 👤 Get profile protected
+GET http://localhost:4000/api/v1/auth/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjcwNjM1OWMyLTdjNWUtNDQ5ZS1hMjUzLWY1NDMxNjBhYzJlNSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NDk2MDQ2NzAsImV4cCI6MTc0OTc3NzQ3MH0.m_wcscF8C3QyPQy5amuqfHwZfSOVjaMDvbISU6zealo
+
+
+
