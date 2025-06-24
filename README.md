@@ -51,7 +51,7 @@ Enter the microservice to develop
 
 ```bash
 cd .\service\<microservice>
-npm install
+npm i
 ```
 Back to root
 
@@ -163,7 +163,7 @@ npm test       # run unit tests
 
 ---
 
-## 2 🌳 Using REST Client
+## 3 🌳 Using REST Client
 
 To test the endpoints directly in **VSCode**, use the **REST Client extension**.
 You must create `.rest` files in the root or inside a dedicated folder like `requests/`.
@@ -178,7 +178,7 @@ You must create `.rest` files in the root or inside a dedicated folder like `req
 ---
 
 
-## 3 🖱️ Commit message best practices
+## 4 🖱️ Commit message best practices
 
 | Rule                                                           | Example                            |
 | -------------------------------------------------------------- | ---------------------------------- |
@@ -203,15 +203,22 @@ Following these guidelines keeps the history readable and makes changelog genera
 
 ---
 
-## 3 📖 Extensions recommend to VSC 
+## 5 📖 Extensions recommend to VSC 
 
 🔨 **ESLint** → Automatically finds and fixes errors.
+
 💅 **Prettier** → Formats your code on every save.
+
 ⚙️ **EditorConfig** → Keeps consistency across teams and editors.
+
 📝 **Conventional Commits** → Standardizes commit messages.
+
 ✅ **TODO Highlights** → Don't leave tasks unfinished in your code.
+
 ✨ **ES6 Snippets** → Shortcuts for writing code quickly.
+
 🚀 **Express Snippets** → Speeds up endpoint creation.
+
 🌐 **REST Client** → Test APIs directly from VSCode.
 
 

@@ -1,27 +1,42 @@
 import js from "@eslint/js";
-import prettier from "eslint-config-prettier";
-import pluginPrettier from "eslint-plugin-prettier";
+import globals from "globals";
+import prettierPlugin from "eslint-plugin-prettier";
 
-export default [
-  js.configs.recommended,
+import jsoncPlugin from "eslint-plugin-jsonc";
+import jsoncParser from "jsonc-eslint-parser";
+
+import { defineFlatConfig } from "eslint-define-config";
+
+export default defineFlatConfig([
   {
+    files: ["**/*.{js,jsx,ts,tsx,mjs,cjs}"],
     languageOptions: {
-      ecmaVersion: 2022,
-      sourceType: "module",
-      globals: {
-        process: "readonly",
-        __dirname: "readonly",
-        module: "readonly",
-        console: "readonly",
-      },
+      parserOptions: { ecmaVersion: "latest", sourceType: "module" },
+      globals: { ...globals.node, ...globals.browser },
     },
-    plugins: {
-      prettier: pluginPrettier,
-    },
+    plugins: { js, prettier: prettierPlugin },
     rules: {
+      ...js.configs.recommended.rules,
       "prettier/prettier": "error",
-      "no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
     },
   },
-  prettier,
-];
+
+  {
+    files: ["**/*.json", "**/*.jsonc", "**/*.json5"],
+    languageOptions: { parser: jsoncParser },
+    plugins: { jsonc: jsoncPlugin },
+    rules: { ...jsoncPlugin.configs["recommended-with-jsonc"].rules },
+  },
+
+  {
+    ignores: [
+      "node_modules",
+      "dist",
+      "build",
+      "coverage",
+      "**/*.min.*",
+      "*.config.js",
+    ],
+    linterOptions: { reportUnusedDisableDirectives: true },
+  },
+]);
