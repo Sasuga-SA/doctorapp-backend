@@ -2,8 +2,10 @@
   "rest-client.environmentVariables": {
     "local": {
       "baseUrlAuth": "http://localhost:4000/api/v1/auth",
+      "baseUrlPermissions": "http://localhost:4000/api/v1/permissions",
       "email":  "aleja@example.com",
-      "pwd":    "12345678"
+      "pwd":    "12345678",
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM2ZWQ0OTM1LWFlODUtNDAxYi05NDE5LTA2NWM3NzY1NjA1ZCIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NTExNzQ0MTIsImV4cCI6MTc1MTM0NzIxMn0.UZUUILtqIlMpNuizy0Q7hqJOviH3kx418I8eG-chmes"
     }
   }
 }

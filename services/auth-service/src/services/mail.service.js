@@ -9,7 +9,7 @@ const transporter = nodemailer.createTransport({
 
 export async function sendEmail({ to, subject, html }) {
   await transporter.sendMail({
-    from: '"Tu Clínica" <no-reply@tuclinica.mx>',
+    from: '"Your Clinic" <no-reply@tuclinica.mx>',
     to,
     subject,
     html,
@@ -18,9 +18,9 @@ export async function sendEmail({ to, subject, html }) {
 
 export function verifyEmailTemplate(name, url) {
   return `
-    <p>Hola ${name},</p>
-    <p>Verifica tu cuenta haciendo clic en el siguiente enlace:</p>
-    <a href="${url}" target="_blank">Verificar cuenta</a>
-    <p>Si no solicitaste esto, ignora el mensaje.</p>
+    <p>Hello ${name},</p>
+    <p>Verify your account by clicking on the following link:</p>
+    <a href="${url}" target="_blank">Verify account</a>
+    <p>If you didn't request this, ignore the message.</p>
   `;
 }

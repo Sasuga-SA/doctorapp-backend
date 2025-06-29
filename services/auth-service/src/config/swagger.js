@@ -6,15 +6,15 @@ const options = {
     info: {
       title: "Auth Service API",
       version: "1.0.0",
-      description: "Documentación de la API de autenticación de doctores",
+      description: "Doctor authentication API documentation",
     },
     servers: [
       {
-        url: "http://localhost:4001/api/v1", // cambia si usas otra ruta base
+        url: "http://localhost:4001/api/v1", // change if you use a different base route
       },
     ],
   },
-  apis: ["./src/routes/*.js", "./src/models/*.js"], // ajusta las rutas si es necesario
+  apis: ["./src/routes/*.js", "./src/models/*.js"], // adjust paths if necessary
 };
 
 const swaggerSpec = swaggerJSDoc(options);

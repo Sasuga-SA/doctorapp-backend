@@ -25,7 +25,7 @@ export const loginUser = async (req, res) => {
 export const getProfile = async (req, res) => {
   try {
     if (!req.user || !req.user.id) {
-      return res.status(401).json({ error: "Token inválido o ID no presente" });
+      return res.status(401).json({ error: "Invalid token or ID not present" });
     }
 
     const user = await getUserProfileService(req.user.id);

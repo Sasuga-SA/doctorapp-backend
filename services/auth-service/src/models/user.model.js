@@ -20,13 +20,13 @@ export class User extends Model {
         },
         password: { type: DataTypes.STRING, allowNull: false },
 
-        // opcionales
+        // optional fields
         specialty: DataTypes.STRING,
         phone: DataTypes.STRING,
         role: { type: DataTypes.STRING, defaultValue: "doctor" },
         organization: DataTypes.STRING,
 
-        // verificación y reset
+        // verification and reset
         isVerified: { type: DataTypes.BOOLEAN, defaultValue: false },
         verifyTokenHash: DataTypes.STRING(64),
         verifyTokenExpires: DataTypes.DATE,

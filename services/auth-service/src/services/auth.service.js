@@ -19,7 +19,7 @@ export async function registerUserService(data) {
   } = data;
 
   const exists = await User.findOne({ where: { email } });
-  if (exists) throw new Error("Email ya registrado");
+  if (exists) throw new Error("Email already registered");
 
   const hashed = await bcrypt.hash(password, 10);
 
@@ -37,18 +37,18 @@ export async function registerUserService(data) {
 
   const verifyToken = generateRandomToken();
   user.verifyTokenHash = hashToken(verifyToken);
-  user.verifyTokenExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 h
+  user.verifyTokenExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
   await user.save();
 
   const url = `${process.env.FRONTEND_URL}/verify-email?token=${verifyToken}`;
   await sendEmail({
     to: user.email,
-    subject: "Verifica tu cuenta en DoctorApp",
-    html: verifyEmailTemplate(user.firstName ?? "Doctor/a", url),
+    subject: "Verify your account in DoctorApp",
+    html: verifyEmailTemplate(user.firstName ?? "Doctor", url),
   });
 
   const payload = {
-    message: "Registro exitoso, revisa tu correo para activar la cuenta",
+    message: "Registration successful, check your email to activate your account",
     id: user.id,
   };
 
@@ -61,15 +61,15 @@ export async function registerUserService(data) {
 
 export const authenticateUserService = async ({ email, password }) => {
   const user = await User.scope("full").findOne({ where: { email } });
-  if (!user) throw new Error("No encontrado");
+  if (!user) throw new Error("Not found");
   console.log(user.password);
 
   if (!user.isVerified) {
-    throw new Error("Cuenta no verificada. Revisa tu correo electrónico.");
+    throw new Error("Account not verified. Check your email.");
   }
 
   const valid = await bcrypt.compare(password, user.password);
-  if (!valid) throw new Error("Credenciales inválidas");
+  if (!valid) throw new Error("Invalid credentials");
 
   const token = jwt.sign(
     { id: user.id, role: user.role },
@@ -86,6 +86,6 @@ export const getUserProfileService = async (id) => {
     attributes: ["id", "firstName", "lastName", "email", "specialty", "role"],
   });
 
-  if (!doctor) throw new Error("Usuario no encontrado");
+  if (!doctor) throw new Error("User not found");
   return doctor;
 };

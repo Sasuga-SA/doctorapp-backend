@@ -21,7 +21,7 @@ export const rateLimiter = (req, res, next) => {
     const retryAfterMin = Math.ceil(retryAfterSec / 60);
 
     return res.status(429).json({
-      message: `Demasiados intentos. Intenta de nuevo en ${retryAfterMin} minutos.`,
+      message: `Too many attempts. Try again in ${retryAfterMin} minutes.`,
       retryAfterSMin: retryAfterMin,
       retryAfterSec,
     });

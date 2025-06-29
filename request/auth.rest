@@ -14,8 +14,8 @@ Content-Type: application/json
 }
 
 
-### Verify e-mail  (put here token copy of register)
-@verifyToken = 8d4be4fb0cc0453e735fb5daadb35305b84f7cd341a20ab08146f7a793a57e4d
+### ✔ Verify e-mail  (put here token copy of register)
+@verifyToken = d68bfd679b57434307b7a5a94451779d8949b9ae6ae28d2e68fae4e01a5a59ca
 
 GET {{baseUrlAuth}}/verify-email?token={{verifyToken}}
 
@@ -31,10 +31,8 @@ Content-Type: application/json
 
 ### 👤 Get profile protected
 GET {{baseUrlAuth}}/profile
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZlMDBmMzJjLWNmZTMtNDA1Zi04ZDVlLWY5NTkwMjAzYTdjZCIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NTA3MzQwMjYsImV4cCI6MTc1MDkwNjgyNn0.8xQygwd2buCb1AKkmuCqH_h9b5C3iOvItxF4oCxkmm0
-
-
-### Forgot password
+Authorization: Bearer {{token}}
+### 🕟 Forgot password
 POST {{baseUrlAuth}}/forgot-password
 Content-Type: application/json
 
@@ -42,7 +40,7 @@ Content-Type: application/json
   "email": "{{email}}"
 }
 
-### 5. Reset contraseña  (copia token de e-mail de reset)
+### 🔄 Reset contraseña  (copia token de e-mail de reset)
 @resetToken = 236250c7958f136e082ee9da3ae3e5abc9b676e129cc97aeb8532cd660ccf645
 
 POST {{baseUrlAuth}}/reset-password
@@ -53,4 +51,111 @@ Content-Type: application/json
   "password": "NuevaClaveSegura123"
 }
 
+### 📋 Obtener permisos del usuario actual
+GET {{baseUrlPermissions}}/my-permissions
+Authorization: Bearer {{token}}
 
+### ✅ Verificar permiso específico - canViewPatients (debe ser true para doctor)
+GET {{baseUrlPermissions}}/check/canViewPatients
+Authorization: Bearer {{token}}
+
+### ❌ Verificar permiso específico - canManageSystem (debe ser false para doctor)
+GET {{baseUrlPermissions}}/check/canManageSystem
+Authorization: Bearer {{token}}
+
+### ✅ Verificar permiso específico - canCreateAppointments (debe ser true para doctor)
+GET {{baseUrlPermissions}}/check/canCreateAppointments
+Authorization: Bearer {{token}}
+### ✅ Verificar permiso específico - canPrescribeMedication (debe ser true para doctor)
+GET {{baseUrlPermissions}}/check/canPrescribeMedication
+Authorization: Bearer {{token}}
+
+### 👤 Obtener información completa del usuario con permisos
+GET {{baseUrlPermissions}}/user-info
+Authorization: Bearer {{token}}
+
+### 🚫 Obtener todos los roles (debe fallar - solo para admin)
+GET {{baseUrlPermissions}}/all-roles
+Authorization: Bearer {{token}}
+
+### 🔐 ========================================
+### 🔐 PRUEBAS DE ERRORES Y CASOS LÍMITE
+### 🔐 ========================================
+
+### 🚫 Probar endpoint sin token (debe fallar con 401)
+GET {{baseUrlPermissions}}/my-permissions
+
+### 🚫 Probar endpoint con token inválido (debe fallar con 403)
+GET {{baseUrlPermissions}}/my-permissions
+Authorization: Bearer token_invalido
+
+### 🚫 Verificar permiso inexistente (debe devolver false)
+GET {{baseUrlPermissions}}/check/permiso_inexistente
+Authorization: Bearer {{token}}
+### 🔐 ========================================
+### 🔐 PRUEBAS DE PERMISOS ESPECÍFICOS DEL DOCTOR
+### 🔐 ========================================
+
+### ✅ Verificar canViewProfile (debe ser true)
+GET {{baseUrlPermissions}}/check/canViewProfile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM0ODg0ZTI4LWQ4M2MtNDcyYi1hOWFhLTA5Nzk5ODRiOWU3MSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NTExNzIwMDIsImV4cCI6MTc1MTM0NDgwMn0.po0ED5wpaJ8Df2fHpne_X92rfZHJ26izxJGVF3GdXHo
+
+### ✅ Verificar canUpdateProfile (debe ser true)
+GET {{baseUrlPermissions}}/check/canUpdateProfile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM0ODg0ZTI4LWQ4M2MtNDcyYi1hOWFhLTA5Nzk5ODRiOWU3MSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NTExNzIwMDIsImV4cCI6MTc1MTM0NDgwMn0.po0ED5wpaJ8Df2fHpne_X92rfZHJ26izxJGVF3GdXHo
+
+### ✅ Verificar canViewAppointments (debe ser true)
+GET {{baseUrlPermissions}}/check/canViewAppointments
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM0ODg0ZTI4LWQ4M2MtNDcyYi1hOWFhLTA5Nzk5ODRiOWU3MSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NTExNzIwMDIsImV4cCI6MTc1MTM0NDgwMn0.po0ED5wpaJ8Df2fHpne_X92rfZHJ26izxJGVF3GdXHo
+
+### ✅ Verificar canUpdateAppointments (debe ser true)
+GET {{baseUrlPermissions}}/check/canUpdateAppointments
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM0ODg0ZTI4LWQ4M2MtNDcyYi1hOWFhLTA5Nzk5ODRiOWU3MSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NTExNzIwMDIsImV4cCI6MTc1MTM0NDgwMn0.po0ED5wpaJ8Df2fHpne_X92rfZHJ26izxJGVF3GdXHo
+
+### ✅ Verificar canDeleteAppointments (debe ser true)
+GET {{baseUrlPermissions}}/check/canDeleteAppointments
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM0ODg0ZTI4LWQ4M2MtNDcyYi1hOWFhLTA5Nzk5ODRiOWU3MSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NTExNzIwMDIsImV4cCI6MTc1MTM0NDgwMn0.po0ED5wpaJ8Df2fHpne_X92rfZHJ26izxJGVF3GdXHo
+
+### ✅ Verificar canViewMedicalRecords (debe ser true)
+GET {{baseUrlPermissions}}/check/canViewMedicalRecords
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM0ODg0ZTI4LWQ4M2MtNDcyYi1hOWFhLTA5Nzk5ODRiOWU3MSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NTExNzIwMDIsImV4cCI6MTc1MTM0NDgwMn0.po0ED5wpaJ8Df2fHpne_X92rfZHJ26izxJGVF3GdXHo
+
+### ✅ Verificar canUpdateMedicalRecords (debe ser true)
+GET {{baseUrlPermissions}}/check/canUpdateMedicalRecords
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM0ODg0ZTI4LWQ4M2MtNDcyYi1hOWFhLTA5Nzk5ODRiOWU3MSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NTExNzIwMDIsImV4cCI6MTc1MTM0NDgwMn0.po0ED5wpaJ8Df2fHpne_X92rfZHJ26izxJGVF3GdXHo
+
+### ✅ Verificar canViewSchedule (debe ser true)
+GET {{baseUrlPermissions}}/check/canViewSchedule
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM0ODg0ZTI4LWQ4M2MtNDcyYi1hOWFhLTA5Nzk5ODRiOWU3MSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NTExNzIwMDIsImV4cCI6MTc1MTM0NDgwMn0.po0ED5wpaJ8Df2fHpne_X92rfZHJ26izxJGVF3GdXHo
+
+### ✅ Verificar canUpdateSchedule (debe ser true)
+GET {{baseUrlPermissions}}/check/canUpdateSchedule
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM0ODg0ZTI4LWQ4M2MtNDcyYi1hOWFhLTA5Nzk5ODRiOWU3MSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NTExNzIwMDIsImV4cCI6MTc1MTM0NDgwMn0.po0ED5wpaJ8Df2fHpne_X92rfZHJ26izxJGVF3GdXHo
+
+### ✅ Verificar canViewReports (debe ser true)
+GET {{baseUrlPermissions}}/check/canViewReports
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM0ODg0ZTI4LWQ4M2MtNDcyYi1hOWFhLTA5Nzk5ODRiOWU3MSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NTExNzIwMDIsImV4cCI6MTc1MTM0NDgwMn0.po0ED5wpaJ8Df2fHpne_X92rfZHJ26izxJGVF3GdXHo
+
+### ✅ Verificar canExportData (debe ser true)
+GET {{baseUrlPermissions}}/check/canExportData
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM0ODg0ZTI4LWQ4M2MtNDcyYi1hOWFhLTA5Nzk5ODRiOWU3MSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NTExNzIwMDIsImV4cCI6MTc1MTM0NDgwMn0.po0ED5wpaJ8Df2fHpne_X92rfZHJ26izxJGVF3GdXHo
+
+### 🔐 ========================================
+### 🔐 PRUEBAS DE PERMISOS NO DISPONIBLES PARA DOCTOR
+### 🔐 ========================================
+
+### ❌ Verificar canViewAllUsers (debe ser false)
+GET {{baseUrlPermissions}}/check/canViewAllUsers
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM0ODg0ZTI4LWQ4M2MtNDcyYi1hOWFhLTA5Nzk5ODRiOWU3MSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NTExNzIwMDIsImV4cCI6MTc1MTM0NDgwMn0.po0ED5wpaJ8Df2fHpne_X92rfZHJ26izxJGVF3GdXHo
+
+### ❌ Verificar canCreateUsers (debe ser false)
+GET {{baseUrlPermissions}}/check/canCreateUsers
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM0ODg0ZTI4LWQ4M2MtNDcyYi1hOWFhLTA5Nzk5ODRiOWU3MSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NTExNzIwMDIsImV4cCI6MTc1MTM0NDgwMn0.po0ED5wpaJ8Df2fHpne_X92rfZHJ26izxJGVF3GdXHo
+
+### ❌ Verificar canUpdateUsers (debe ser false)
+GET {{baseUrlPermissions}}/check/canUpdateUsers
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM0ODg0ZTI4LWQ4M2MtNDcyYi1hOWFhLTA5Nzk5ODRiOWU3MSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NTExNzIwMDIsImV4cCI6MTc1MTM0NDgwMn0.po0ED5wpaJ8Df2fHpne_X92rfZHJ26izxJGVF3GdXHo
+
+### ❌ Verificar canDeleteUsers (debe ser false)
+GET {{baseUrlPermissions}}/check/canDeleteUsers
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM0ODg0ZTI4LWQ4M2MtNDcyYi1hOWFhLTA5Nzk5ODRiOWU3MSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NTExNzIwMDIsImV4cCI6MTc1MTM0NDgwMn0.po0ED5wpaJ8Df2fHpne_X92rfZHJ26izxJGVF3GdXHo
