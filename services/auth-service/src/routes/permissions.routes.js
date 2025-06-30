@@ -18,7 +18,6 @@ const router = express.Router();
 // All routes require authentication
 router.use(verifyJWT);
 
-console.log("Entre");
 // Get current user permissions
 router.get("/my-permissions", getUserPermissions);
 

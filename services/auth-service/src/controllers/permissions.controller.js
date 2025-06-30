@@ -15,10 +15,8 @@ export const getUserPermissions = async (req, res) => {
         error: "User not authenticated or role not defined",
       });
     }
-    console.log("Entre Permissions");
     const userRole = req.user.role;
     const permissions = getRolePermissions(userRole);
-    console.log("permissions", permissions);
     res.json({
       role: userRole,
       permissions: permissions,
@@ -117,7 +115,7 @@ export const getAllRolesAndPermissions = async (req, res) => {
 
     if (!hasAdminPermission) {
       return res.status(403).json({
-        error: "You don't have permission to view this information",
+        error: "Insufficient permissions to view this information",
       });
     }
 

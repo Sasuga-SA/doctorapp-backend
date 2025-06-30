@@ -10,7 +10,7 @@ export async function forgotPasswordController(req, res) {
   const user = await User.findOne({ where: { email } });
   if (!user) {
     return res.json({
-      message: "If the email exists, a link will be sent!",
+      message: "If the email exists, a link will be sent.",
     });
   }
 
@@ -25,7 +25,7 @@ export async function forgotPasswordController(req, res) {
     subject: "Reset your password",
     html: `
       <p>Hello,</p>
-      <p>Click on the following link to create a new password. This link expires in 15&nbsp;minutes.</p>
+      <p>Click on the following link to create a new password. This link expires in 15 minutes.</p>
       <a href="${url}">Reset password</a>
       <p>If you didn't request this change, you can ignore this email.</p>
     `,
@@ -45,7 +45,7 @@ export async function forgotPasswordController(req, res) {
 export async function resetPasswordController(req, res) {
   const { token, password } = req.body;
   if (!token || !password)
-    return res.status(400).json({ message: "Incomplete data" });
+    return res.status(400).json({ message: "Token and password are required" });
 
   const hashed = hashToken(token);
 

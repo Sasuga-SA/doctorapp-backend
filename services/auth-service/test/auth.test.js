@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 
-describe("Prueba mínima de CI", () => {
-  it("debe confirmar que el entorno de pruebas funciona", () => {
+describe("Minimum CI test", () => {
+  it("should confirm that the test environment works", () => {
     expect(true).toBe(true);
   });
 });

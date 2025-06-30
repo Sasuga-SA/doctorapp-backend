@@ -7,7 +7,7 @@ Este documento describe todas las rutas de autenticación disponibles en el serv
 ## Estructura de Rutas
 
 ### Rutas Públicas (Sin Autenticación)
-Estas rutas no requieren token JWT y están disponibles para todos los usuarios:
+Estas rutas no requieren token JWT y están disponibles para todos los usuarios.
 
 ### Rutas Protegidas (Con Autenticación)
 Estas rutas requieren token JWT válido y pueden requerir permisos específicos.
@@ -27,33 +27,36 @@ Estas rutas requieren token JWT válido y pueden requerir permisos específicos.
 **Body (JSON):**
 ```json
 {
-  "firstName": "Alejandro",
-  "lastName": "Sanchez",
   "email": "alejandro@example.com",
   "password": "password123",
   "role": "doctor"
 }
 ```
 
+**Campos requeridos:**
+- `email` (string, formato válido de email) - Se guarda en BD
+- `password` (string, mínimo 8 caracteres) - Se guarda en BD
+
+**Campos opcionales:**
+- `role` (string, default: "doctor") - Se guarda en BD
+
+**⚠️ Nota importante:** El Auth Service solo maneja autenticación y autorización. Los datos personales como nombre, apellido, especialidad, teléfono, etc., deben ser manejados por el Profile Service después del registro.
+
 **Respuesta exitosa (201):**
 ```json
 {
-  "message": "User registered successfully",
-  "user": {
-    "id": "uuid",
-    "firstName": "Alejandro",
-    "lastName": "Sanchez",
-    "email": "alejandro@example.com",
-    "role": "doctor",
-    "isVerified": false
-  }
+  "message": "Registration successful, check your email to activate your account",
+  "id": "uuid"
 }
 ```
 
 **Respuesta de error (400):**
 ```json
 {
-  "error": "Email already exists"
+  "errors": [
+    "Email does not have a valid format.",
+    "Password is required and must have at least 8 characters."
+  ]
 }
 ```
 
@@ -183,7 +186,7 @@ GET /auth/verify-email?token=abc123def456
 #### 6. GET `/auth/profile`
 **Obtener perfil del usuario**
 
-**Descripción:** Obtiene la información del perfil del usuario autenticado.
+**Descripción:** Obtiene la información básica del usuario autenticado (solo datos del auth service).
 
 **Middleware aplicado:**
 - `verifyJWT` - Verifica token JWT
@@ -199,8 +202,6 @@ Authorization: Bearer <token>
 {
   "user": {
     "id": "uuid",
-    "firstName": "Alejandro",
-    "lastName": "Sanchez",
     "email": "alejandro@example.com",
     "role": "doctor",
     "isVerified": true,
@@ -230,7 +231,7 @@ Authorization: Bearer <token>
 - **`verifyJWT`**: Verifica que el token JWT sea válido y extrae la información del usuario
 
 ### Validación
-- **`validateRegisterUser`**: Valida los datos de registro (email, contraseña, etc.)
+- **`validateRegisterUser`**: Valida los datos de registro (email, contraseña, rol)
 
 ### Seguridad
 - **`rateLimiter`**: Limita el número de intentos de login para prevenir ataques de fuerza bruta
@@ -260,8 +261,6 @@ Authorization: Bearer <token>
 curl -X POST http://localhost:3000/auth/register/ \
   -H "Content-Type: application/json" \
   -d '{
-    "firstName": "Alejandro",
-    "lastName": "Sanchez",
     "email": "alejandro@example.com",
     "password": "password123",
     "role": "doctor"
@@ -330,6 +329,21 @@ curl -X POST http://localhost:3000/auth/reset-password \
 1. Usuario solicita restablecimiento con `POST /auth/forgot-password`
 2. Sistema envía email con token
 3. Usuario restablece contraseña con `POST /auth/reset-password`
+
+## ⚠️ Notas Importantes
+
+### Separación de Responsabilidades
+- **Auth Service**: Solo maneja autenticación, autorización y datos básicos del usuario (email, password, role, isVerified)
+- **Profile Service**: Maneja toda la información personal del usuario (nombre, apellido, especialidad, teléfono, dirección, etc.)
+
+### Datos del Auth Service
+- **Se guardan en BD**: `email`, `password`, `role`, `isVerified`
+- **Se validan**: `email` (formato), `password` (longitud mínima), `role` (tipo string)
+
+### Flujo Recomendado
+1. Registrar usuario en Auth Service
+2. Verificar email
+3. Crear perfil en Profile Service con los datos personales
 
 ## Seguridad
 

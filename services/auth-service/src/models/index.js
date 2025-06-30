@@ -9,7 +9,7 @@ const models = {
 
 const syncDb = async () => {
   await sequelize.sync({ force: true });
-  console.log("📦 Modelos sincronizados con la base de datos");
+  console.log("📦 Models synchronized with database");
 };
 
 export { sequelize, syncDb };

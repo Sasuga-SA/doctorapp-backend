@@ -18,6 +18,11 @@ const ROLE_PERMISSIONS = {
     // Limited administrative permissions
     canViewReports: true,
     canExportData: true,
+    // Profile management permissions
+    canViewAllUsers: true,      // Puede ver todos los perfiles
+    canUpdateUsers: false,      // NO puede actualizar otros perfiles
+    canDeleteUsers: false,      // NO puede eliminar otros perfiles
+    canSearchUsers: true,       // Puede buscar perfiles
   },
   admin: {
     // Administrator permissions (for future implementations)
@@ -25,14 +30,15 @@ const ROLE_PERMISSIONS = {
     canUpdateProfile: true,
     canViewAllUsers: true,
     canCreateUsers: true,
-    canUpdateUsers: true,
-    canDeleteUsers: true,
+    canUpdateUsers: true,       // Admin SÍ puede actualizar otros perfiles
+    canDeleteUsers: true,       // Admin SÍ puede eliminar otros perfiles
     canViewAllPatients: true,
     canViewAllAppointments: true,
     canViewAllMedicalRecords: true,
     canViewReports: true,
     canExportData: true,
     canManageSystem: true,
+    canSearchUsers: true,       // Puede buscar perfiles
   },
   patient: {
     // Patient permissions (for future implementations)
@@ -43,6 +49,11 @@ const ROLE_PERMISSIONS = {
     canCancelAppointments: true,
     canViewOwnMedicalRecords: true,
     canViewOwnPrescriptions: true,
+    // Profile management permissions
+    canViewAllUsers: false,     // NO puede ver otros perfiles
+    canUpdateUsers: false,      // NO puede actualizar otros perfiles
+    canDeleteUsers: false,      // NO puede eliminar otros perfiles
+    canSearchUsers: false,      // NO puede buscar perfiles
   },
 };
 

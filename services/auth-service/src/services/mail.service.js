@@ -9,7 +9,7 @@ const transporter = nodemailer.createTransport({
 
 export async function sendEmail({ to, subject, html }) {
   await transporter.sendMail({
-    from: '"Your Clinic" <no-reply@tuclinica.mx>',
+    from: '"DoctorApp" <no-reply@doctorapp.com>',
     to,
     subject,
     html,

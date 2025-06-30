@@ -7,7 +7,6 @@ const router = express.Router();
 // Group all microservice routes here
 router.use("/auth", authRoutes);
 
-console.log("Entre Index Routes");
 router.use("/permissions", permissionsRoutes);
 
 // You could add more here in the future:

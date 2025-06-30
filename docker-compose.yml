@@ -20,6 +20,16 @@ services:
     ports:
       - '4000:4000'
 
+  profile-service:
+    build: ./services/profile-service
+    volumes:
+      - ./services/profile-service:/usr/src/app
+      - ./services/profile-service/uploads:/usr/src/app/uploads
+    env_file: ./services/profile-service/.env
+    depends_on: [postgres]
+    ports:
+      - '4001:4001'
+
   # appointment-service:
   #   build: ./services/appointment-service
   #   volumes:

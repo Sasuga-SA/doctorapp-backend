@@ -7,16 +7,7 @@ import { sendEmail, verifyEmailTemplate } from "./mail.service.js";
 const { User } = models;
 
 export async function registerUserService(data) {
-  const {
-    firstName,
-    lastName,
-    email,
-    password,
-    specialty,
-    phone,
-    role = "doctor",
-    organization,
-  } = data;
+  const { email, password, role = "doctor" } = data;
 
   const exists = await User.findOne({ where: { email } });
   if (exists) throw new Error("Email already registered");
@@ -24,14 +15,9 @@ export async function registerUserService(data) {
   const hashed = await bcrypt.hash(password, 10);
 
   const user = await User.create({
-    firstName,
-    lastName,
     email,
     password: hashed,
-    specialty,
-    phone,
     role,
-    organization,
     isVerified: false,
   });
 
@@ -44,11 +30,12 @@ export async function registerUserService(data) {
   await sendEmail({
     to: user.email,
     subject: "Verify your account in DoctorApp",
-    html: verifyEmailTemplate(user.firstName ?? "Doctor", url),
+    html: verifyEmailTemplate("User", url),
   });
 
   const payload = {
-    message: "Registration successful, check your email to activate your account",
+    message:
+      "Registration successful, check your email to activate your account",
     id: user.id,
   };
 
@@ -61,8 +48,7 @@ export async function registerUserService(data) {
 
 export const authenticateUserService = async ({ email, password }) => {
   const user = await User.scope("full").findOne({ where: { email } });
-  if (!user) throw new Error("Not found");
-  console.log(user.password);
+  if (!user) throw new Error("User not found");
 
   if (!user.isVerified) {
     throw new Error("Account not verified. Check your email.");
@@ -81,11 +67,13 @@ export const authenticateUserService = async ({ email, password }) => {
   return token;
 };
 
-export const getUserProfileService = async (id) => {
-  const doctor = await User.findByPk(id, {
-    attributes: ["id", "firstName", "lastName", "email", "specialty", "role"],
-  });
+export const getUserProfileService = async (userId) => {
+  const user = await User.scope("full").findByPk(userId);
+  if (!user) throw new Error("User not found");
 
-  if (!doctor) throw new Error("User not found");
-  return doctor;
+  // Return user data without sensitive information
+  const userData = user.toJSON();
+  delete userData.password;
+  delete userData.verifyTokenHash;
+  return userData;
 };

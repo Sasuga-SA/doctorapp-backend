@@ -1,5 +1,5 @@
 {
-  "name": "auth-service",
+  "name": "profile-service",
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
@@ -10,14 +10,14 @@
     "migrate": "sequelize-cli db:migrate",
     "seed": "sequelize-cli db:seed:all",
     "lint": "eslint src/**/*.js",
-    "lint:fix":    "eslint . --ext .js,.ts,.tsx --fix",
-    "format":      "prettier . --write",
-    "format:check":"prettier . --check"
+    "lint:fix": "eslint . --ext .js,.ts,.tsx --fix",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "Microservicio para gestión de perfiles de usuarios",
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
@@ -26,7 +26,7 @@
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
-    "nodemailer": "^7.0.3",
+    "multer": "^1.4.5-lts.1",
     "pg": "^8.16.0",
     "sequelize": "^6.37.7"
   },
@@ -47,4 +47,4 @@
     "supertest": "^7.1.1",
     "vitest": "^3.2.3"
   }
-}
+} 

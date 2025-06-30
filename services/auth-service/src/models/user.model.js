@@ -10,8 +10,6 @@ export class User extends Model {
           defaultValue: DataTypes.UUIDV4,
           primaryKey: true,
         },
-        firstName: { type: DataTypes.STRING, allowNull: false },
-        lastName: { type: DataTypes.STRING, allowNull: false },
         email: {
           type: DataTypes.STRING,
           allowNull: false,
@@ -19,12 +17,7 @@ export class User extends Model {
           validate: { isEmail: true },
         },
         password: { type: DataTypes.STRING, allowNull: false },
-
-        // optional fields
-        specialty: DataTypes.STRING,
-        phone: DataTypes.STRING,
         role: { type: DataTypes.STRING, defaultValue: "doctor" },
-        organization: DataTypes.STRING,
 
         // verification and reset
         isVerified: { type: DataTypes.BOOLEAN, defaultValue: false },

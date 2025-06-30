@@ -1,0 +1,420 @@
+@profileId = f3527b27-205e-41dc-b47a-5f0d49cdcb9d
+
+### 🔑 Login para obtener token (usar auth-service primero)
+POST {{baseUrlAuth}}/login
+Content-Type: application/json
+
+{
+  "email":     "{{email}}",
+  "password":  "{{pwd}}"
+}
+
+### 👤 Crear perfil de usuario
+POST {{baseUrlProfile}}/profiles
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "firstName": "Dr. Alejandro",
+  "lastName": "Sánchez",
+  "dateOfBirth": "1985-03-15",
+  "gender": "male",
+  "phone": "+1234567890",
+  "address": "Calle Principal 123",
+  "city": "Ciudad de México",
+  "state": "CDMX",
+  "country": "México",
+  "postalCode": "12345",
+  "bio": "Médico pediatra con 10 años de experiencia en atención infantil",
+  "specialty": "Pediatra"
+}
+
+### 👤 Obtener mi perfil
+GET {{baseUrlProfile}}/profiles/me
+Authorization: Bearer {{token}}
+
+### 👤 Obtener perfil por ID
+GET {{baseUrlProfile}}/profiles/{{profileId}}
+Authorization: Bearer {{token}}
+
+### 👤 Actualizar mi perfil
+PUT {{baseUrlProfile}}/profiles/me
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "firstName": "Dr. Alejandro Carlos",
+  "lastName": "Sánchez García",
+  "phone": "+1234567891",
+  "bio": "Médico pediatra especializado en neonatología con 12 años de experiencia",
+  "specialty": "Pediatra"
+}
+
+### 👤 Actualizar perfil por ID (admin)
+PUT {{baseUrlProfile}}/profiles/{{profileId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "firstName": "Dr. Alejandro",
+  "lastName": "Sánchez",
+  "phone": "+1234567892",
+  "bio": "Médico pediatra con experiencia en atención integral del niño",
+  "specialty": "Pediatra"
+}
+
+### 📸 Subir foto de perfil
+POST {{baseUrlProfile}}/profiles/upload-picture
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="profilePicture"; filename="profile.jpg"
+Content-Type: image/jpeg
+
+< ./test-image.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### 📋 Listar todos los perfiles
+GET {{baseUrlProfile}}/profiles
+Authorization: Bearer {{token}}
+
+### 📋 Listar perfiles con paginación
+GET {{baseUrlProfile}}/profiles?page=1&limit=5
+Authorization: Bearer {{token}}
+
+### 🔍 Buscar perfiles por nombre
+GET {{baseUrlProfile}}/profiles/search?q=Alejandro
+Authorization: Bearer {{token}}
+
+### 🔍 Buscar perfiles con paginación
+GET {{baseUrlProfile}}/profiles/search?q=Sánchez&page=1&limit=3
+Authorization: Bearer {{token}}
+
+### 🗑️ Eliminar mi perfil (soft delete)
+DELETE {{baseUrlProfile}}/profiles/me
+Authorization: Bearer {{token}}
+
+### 🗑️ Eliminar perfil por ID (admin)
+DELETE {{baseUrlProfile}}/profiles/{{profileId}}
+Authorization: Bearer {{token}}
+
+### 💚 Verificar salud del servicio
+GET {{baseUrlProfile}}/health
+
+### 🔒 PRUEBAS DE PERMISOS Y SEGURIDAD
+
+### 🚫 Test endpoint sin token (debe fallar con 401)
+POST {{baseUrlProfile}}/profiles
+Content-Type: application/json
+
+{
+  "firstName": "Test",
+  "lastName": "User"
+}
+
+### 🚫 Test endpoint con token inválido (debe fallar con 401)
+GET {{baseUrlProfile}}/profiles/me
+Authorization: Bearer token_invalido
+
+### 🚫 Test búsqueda sin término (debe fallar con 400)
+GET {{baseUrlProfile}}/profiles/search
+Authorization: Bearer {{token}}
+
+### 🚫 Test subida de archivo sin archivo (debe fallar con 400)
+POST {{baseUrlProfile}}/profiles/upload-picture
+Authorization: Bearer {{token}}
+
+### 🚫 Test doctor intentando actualizar perfil de otro (debe fallar con 403)
+# Nota: Necesitas un token de doctor para esta prueba
+PUT {{baseUrlProfile}}/profiles/{{profileId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "firstName": "Test",
+  "lastName": "Doctor"
+}
+
+### 🚫 Test doctor intentando eliminar perfil (debe fallar con 403)
+# Nota: Necesitas un token de doctor para esta prueba
+DELETE {{baseUrlProfile}}/profiles/{{profileId}}
+Authorization: Bearer {{token}}
+
+### 🚫 Test paciente intentando ver todos los perfiles (debe fallar con 403)
+# Nota: Necesitas un token de paciente para esta prueba
+GET {{baseUrlProfile}}/profiles
+Authorization: Bearer {{token}}
+
+### 🚫 Test paciente intentando buscar perfiles (debe fallar con 403)
+# Nota: Necesitas un token de paciente para esta prueba
+GET {{baseUrlProfile}}/profiles/search?q=test
+Authorization: Bearer {{token}}
+
+### 🚫 Test paciente intentando ver perfil de otro (debe fallar con 403)
+# Nota: Necesitas un token de paciente para esta prueba
+GET {{baseUrlProfile}}/profiles/{{profileId}}
+Authorization: Bearer {{token}}
+
+### ✅ Test admin accediendo a todos los endpoints (debe funcionar)
+# Nota: Necesitas un token de admin para estas pruebas
+GET {{baseUrlProfile}}/profiles
+Authorization: Bearer {{token}}
+
+GET {{baseUrlProfile}}/profiles/search?q=admin
+Authorization: Bearer {{token}}
+
+PUT {{baseUrlProfile}}/profiles/{{profileId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "firstName": "Admin",
+  "lastName": "Test"
+}
+
+DELETE {{baseUrlProfile}}/profiles/{{profileId}}
+Authorization: Bearer {{token}}
+
+### 📝 Ejemplos de datos para crear perfiles
+
+### 👨‍⚕️ Perfil de Doctor - Cardiólogo
+POST {{baseUrlProfile}}/profiles
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "firstName": "Dr. María",
+  "lastName": "González",
+  "dateOfBirth": "1980-07-22",
+  "gender": "female",
+  "phone": "+1234567893",
+  "address": "Av. Reforma 456",
+  "city": "Guadalajara",
+  "state": "Jalisco",
+  "country": "México",
+  "postalCode": "44100",
+  "bio": "Cardióloga especializada en enfermedades del corazón con 15 años de experiencia",
+  "specialty": "Cardiólogo"
+}
+
+### 👨‍⚕️ Perfil de Doctor - Dermatólogo
+POST {{baseUrlProfile}}/profiles
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "firstName": "Dr. Roberto",
+  "lastName": "Hernández",
+  "dateOfBirth": "1975-12-10",
+  "gender": "male",
+  "phone": "+1234567894",
+  "address": "Calle Juárez 789",
+  "city": "Monterrey",
+  "state": "Nuevo León",
+  "country": "México",
+  "postalCode": "64000",
+  "bio": "Dermatólogo especializado en cirugía dermatológica y tratamientos láser",
+  "specialty": "Dermatólogo"
+}
+
+### 👨‍⚕️ Perfil de Doctor - Ginecólogo
+POST {{baseUrlProfile}}/profiles
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "firstName": "Dra. Carmen",
+  "lastName": "López",
+  "dateOfBirth": "1982-05-18",
+  "gender": "female",
+  "phone": "+1234567895",
+  "address": "Blvd. Constitución 321",
+  "city": "Puebla",
+  "state": "Puebla",
+  "country": "México",
+  "postalCode": "72000",
+  "bio": "Ginecóloga especializada en reproducción asistida y fertilidad",
+  "specialty": "Ginecólogo"
+}
+
+### 👨‍⚕️ Perfil de Doctor - Psiquiatra
+POST {{baseUrlProfile}}/profiles
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "firstName": "Dr. Fernando",
+  "lastName": "Morales",
+  "dateOfBirth": "1978-09-30",
+  "gender": "male",
+  "phone": "+1234567896",
+  "address": "Av. Insurgentes 654",
+  "city": "Tijuana",
+  "state": "Baja California",
+  "country": "México",
+  "postalCode": "22000",
+  "bio": "Psiquiatra especializado en trastornos del estado de ánimo y ansiedad",
+  "specialty": "Psiquiatra"
+}
+
+### 👨‍⚕️ Perfil de Doctor - Ortopedista
+POST {{baseUrlProfile}}/profiles
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "firstName": "Dr. Patricia",
+  "lastName": "Vargas",
+  "dateOfBirth": "1983-03-25",
+  "gender": "female",
+  "phone": "+1234567897",
+  "address": "Calle Morelos 987",
+  "city": "Mérida",
+  "state": "Yucatán",
+  "country": "México",
+  "postalCode": "97000",
+  "bio": "Ortopedista especializada en cirugía de columna y traumatología deportiva",
+  "specialty": "Ortopedista"
+}
+
+### 👨‍⚕️ Perfil de Doctor - Oncólogo
+POST {{baseUrlProfile}}/profiles
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "firstName": "Dr. Javier",
+  "lastName": "Ruiz",
+  "dateOfBirth": "1970-11-14",
+  "gender": "male",
+  "phone": "+1234567898",
+  "address": "Av. Universidad 147",
+  "city": "León",
+  "state": "Guanajuato",
+  "country": "México",
+  "postalCode": "37000",
+  "bio": "Oncólogo especializado en tratamientos personalizados y medicina de precisión",
+  "specialty": "Oncólogo"
+}
+
+### 👨‍⚕️ Perfil de Doctor - Neurólogo
+POST {{baseUrlProfile}}/profiles
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "firstName": "Dra. Ana Sofía",
+  "lastName": "Mendoza",
+  "dateOfBirth": "1985-01-08",
+  "gender": "female",
+  "phone": "+1234567899",
+  "address": "Calle Hidalgo 258",
+  "city": "Querétaro",
+  "state": "Querétaro",
+  "country": "México",
+  "postalCode": "76000",
+  "bio": "Neuróloga especializada en enfermedades neurodegenerativas y epilepsia",
+  "specialty": "Neurólogo"
+}
+
+### 👨‍⚕️ Perfil de Doctor - Endocrinólogo
+POST {{baseUrlProfile}}/profiles
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "firstName": "Dr. Carlos",
+  "lastName": "Silva",
+  "dateOfBirth": "1976-06-20",
+  "gender": "male",
+  "phone": "+1234567900",
+  "address": "Blvd. Independencia 369",
+  "city": "San Luis Potosí",
+  "state": "San Luis Potosí",
+  "country": "México",
+  "postalCode": "78000",
+  "bio": "Endocrinólogo especializado en diabetes y trastornos metabólicos",
+  "specialty": "Endocrinólogo"
+}
+
+### 📋 Lista de especialidades válidas
+# Alergólogo, Anestesiólogo, Cardiólogo, Cirujano cardiovascular, 
+# Cirujano general, Cirujano maxilofacial, Cirujano plástico, 
+# Dermatólogo, Endocrinólogo, Fisiatra, Fisioterapeuta, 
+# Gastroenterólogo, Geriatra, Ginecólogo, Hematólogo, 
+# Infectólogo, Internista, Médico del deporte, Médico familiar, 
+# Médico general, Neumólogo, Neurólogo, Nutriólogo, Obstetra, 
+# Odontólogo, Oftalmólogo, Oncólogo, Ortopedista, 
+# Otorrinolaringólogo, Patólogo, Pediatra, Podólogo, Psiquiatra, 
+# Psicólogo clínico, Psicoterapeuta, Radiólogo, Reumatólogo, 
+# Sexólogo, Terapeuta ocupacional, Traumatólogo, Urólogo
+
+### 🔍 Casos de prueba para validación
+
+### 🚫 Test con datos inválidos - Nombre muy corto
+POST {{baseUrlProfile}}/profiles
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "firstName": "A",
+  "lastName": "Sánchez"
+}
+
+### 🚫 Test con datos inválidos - Teléfono incorrecto
+POST {{baseUrlProfile}}/profiles
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "firstName": "Dr. Alejandro",
+  "lastName": "Sánchez",
+  "phone": "123abc"
+}
+
+### 🚫 Test con datos inválidos - Género inválido
+POST {{baseUrlProfile}}/profiles
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "firstName": "Dr. Alejandro",
+  "lastName": "Sánchez",
+  "gender": "invalid"
+}
+
+### 🚫 Test con datos inválidos - Especialidad inválida
+POST {{baseUrlProfile}}/profiles
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "firstName": "Dr. Alejandro",
+  "lastName": "Sánchez",
+  "specialty": "Especialidad Inexistente"
+}
+
+### 🚫 Test con datos inválidos - Fecha de nacimiento inválida
+POST {{baseUrlProfile}}/profiles
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "firstName": "Dr. Alejandro",
+  "lastName": "Sánchez",
+  "dateOfBirth": "fecha-invalida"
+}
+
+### 📊 RESUMEN DE PERMISOS POR ROL
+
+### 👨‍⚕️ DOCTOR
+# ✅ Puede: Ver su propio perfil, actualizar su propio perfil, ver todos los perfiles, buscar perfiles
+# ❌ NO puede: Actualizar otros perfiles, eliminar perfiles
+
+### 👨‍💼 ADMIN
+# ✅ Puede: Todo (ver, crear, actualizar, eliminar, buscar perfiles)
+
+### 👤 PATIENT
+# ✅ Puede: Ver su propio perfil, actualizar su propio perfil
+# ❌ NO puede: Ver otros perfiles, actualizar otros perfiles, eliminar perfiles, buscar perfiles

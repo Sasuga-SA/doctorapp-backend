@@ -17,7 +17,7 @@ cd doctorapp-backend
 | **Docker Desktop** | 4.x (Docker Engine 20+ & Compose v2) |
 | **Git**            | 2.40                                 |
 
-> **Why Docker only?** Using Docker guarantees “it-works-on-my-machine” consistency for every contributor.
+> **Why Docker only?** Using Docker guarantees "it-works-on-my-machine" consistency for every contributor.
 
 ---
 
@@ -222,5 +222,314 @@ Following these guidelines keeps the history readable and makes changelog genera
 🌐 **REST Client** → Test APIs directly from VSCode.
 
 
-That’s it!
+That's it!
 Clone → configure `.env` → `docker compose up` → lint & test before every commit → clean, traceable Git history. Happy coding! 🚀
+
+# DoctorApp Backend - Microservicios
+
+## 📋 Descripción
+
+Sistema backend para aplicación médica construido con microservicios. Incluye servicios de autenticación y gestión de perfiles de usuario.
+
+## 🏗️ Arquitectura
+
+### Servicios Disponibles
+
+1. **Auth Service** (`services/auth-service/`)
+   - Autenticación y autorización
+   - Registro de usuarios (solo guarda: email, password, role, isVerified)
+   - Verificación de email
+   - Gestión de contraseñas
+   - Sistema de permisos por rol
+
+2. **Profile Service** (`services/profile-service/`)
+   - Gestión de perfiles de usuario (datos personales completos)
+   - Subida de fotos de perfil
+   - Búsqueda y listado de perfiles
+
+## 🔄 Flujo de Registro y Perfil
+
+### 1. Registro de Usuario (Auth Service)
+```bash
+POST /auth/register
+{
+  "firstName": "Alejandro",        # Se valida pero NO se guarda en BD
+  "lastName": "Sanchez",           # Se valida pero NO se guarda en BD
+  "email": "alejandro@example.com", # Se guarda en BD
+  "password": "password123",       # Se guarda en BD
+  "specialty": "Pediatra",         # Se valida pero NO se guarda en BD
+  "phone": "1234567",              # Se valida pero NO se guarda en BD
+  "role": "doctor"                 # Se guarda en BD
+}
+```
+
+### 2. Verificación de Email
+```bash
+GET /auth/verify-email?token=abc123def456
+```
+
+### 3. Login para obtener Token
+```bash
+POST /auth/login
+{
+  "email": "alejandro@example.com",
+  "password": "password123"
+}
+```
+
+### 4. Crear Perfil (Profile Service)
+```bash
+POST /profiles
+Authorization: Bearer <token>
+{
+  "firstName": "Dr. Alejandro",    # Se guarda en BD del profile service
+  "lastName": "Sánchez",           # Se guarda en BD del profile service
+  "dateOfBirth": "1985-03-15",     # Se guarda en BD del profile service
+  "gender": "male",                # Se guarda en BD del profile service
+  "phone": "+1234567890",          # Se guarda en BD del profile service
+  "address": "Calle Principal 123", # Se guarda en BD del profile service
+  "city": "Ciudad de México",      # Se guarda en BD del profile service
+  "state": "CDMX",                 # Se guarda en BD del profile service
+  "country": "México",             # Se guarda en BD del profile service
+  "postalCode": "12345",           # Se guarda en BD del profile service
+  "bio": "Médico pediatra con 10 años de experiencia" # Se guarda en BD del profile service
+}
+```
+
+## 🚀 Inicio Rápido
+
+### Prerrequisitos
+- Node.js 18+
+- Docker y Docker Compose
+- PostgreSQL
+
+### Instalación
+
+1. **Clonar el repositorio**
+```bash
+git clone <repository-url>
+cd doctorapp-backend
+```
+
+2. **Configurar variables de entorno**
+```bash
+# Auth Service
+cp services/auth-service/.env.example services/auth-service/.env
+
+# Profile Service
+cp services/profile-service/.env.example services/profile-service/.env
+```
+
+3. **Ejecutar con Docker Compose**
+```bash
+docker-compose up -d
+```
+
+### URLs de los Servicios
+- **Auth Service**: http://localhost:3000
+- **Profile Service**: http://localhost:4001
+
+## 📚 Documentación
+
+### Auth Service
+- [Rutas de Autenticación](services/auth-service/README-AUTH-ROUTES.md)
+- [Sistema de Permisos](services/auth-service/README-PERMISSIONS.md)
+
+### Profile Service
+- [Rutas de Perfil](services/profile-service/README-PROFILE-ROUTES.md)
+
+## 🧪 Testing
+
+### Archivos .rest para Testing
+- [Flujo Completo](request/complete-flow.rest)
+- [Auth Service](request/auth.rest)
+- [Profile Service](request/profile.rest)
+
+### Variables de Entorno para VS Code
+```json
+{
+  "baseUrlAuth": "http://localhost:3000/auth",
+  "baseUrlProfile": "http://localhost:4001/api/v1",
+  "baseUrlPermissions": "http://localhost:3000/permissions",
+  "email": "tu-email@example.com",
+  "pwd": "tu-password",
+  "token": "token-jwt-del-login"
+}
+```
+
+## 🔐 Roles y Permisos
+
+### Rol Doctor
+- ✅ Ver y actualizar perfil
+- ✅ Ver pacientes
+- ✅ Crear, ver, actualizar y eliminar citas
+- ✅ Ver y actualizar registros médicos
+- ✅ Prescribir medicamentos
+- ✅ Ver y actualizar horarios
+- ✅ Ver reportes
+- ✅ Exportar datos
+
+### Rol Paciente
+- ✅ Ver y actualizar perfil
+- ✅ Ver citas propias
+- ✅ Ver registros médicos propios
+
+### Rol Admin
+- ✅ Todos los permisos de doctor
+- ✅ Gestionar sistema
+- ✅ Ver todos los usuarios
+- ✅ Crear usuarios
+
+## 📋 Campos de Registro (Auth Service)
+
+### Campos Requeridos
+- `firstName` (string, mínimo 2 caracteres) - Se valida pero NO se guarda en BD
+- `lastName` (string, mínimo 2 caracteres) - Se valida pero NO se guarda en BD
+- `email` (string, formato válido) - Se guarda en BD
+- `password` (string, mínimo 8 caracteres) - Se guarda en BD
+
+### Campos Opcionales
+- `role` (string, default: "doctor") - Se guarda en BD
+- `specialty` (string, requerido solo si role="doctor") - Se valida pero NO se guarda en BD
+- `phone` (string, mínimo 7 dígitos) - Se valida pero NO se guarda en BD
+
+### ⚠️ Nota Importante
+**Solo se guardan en la base de datos del Auth Service:**
+- `email`
+- `password` 
+- `role`
+- `isVerified`
+
+**Los campos `firstName`, `lastName`, `specialty`, `phone` se validan pero NO se almacenan en este servicio. Para guardar estos datos, usar el Profile Service después del registro.**
+
+### Especialidades Válidas para Doctores
+```
+Alergólogo, Anestesiólogo, Cardiólogo, Cirujano cardiovascular, 
+Cirujano general, Cirujano maxilofacial, Cirujano plástico, 
+Dermatólogo, Endocrinólogo, Fisiatra, Fisioterapeuta, 
+Gastroenterólogo, Geriatra, Ginecólogo, Hematólogo, Infectólogo, 
+Internista, Médico del deporte, Médico familiar, Médico general, 
+Neumólogo, Neurólogo, Nutriólogo, Obstetra, Odontólogo, 
+Oftalmólogo, Oncólogo, Ortopedista, Otorrinolaringólogo, 
+Patólogo, Pediatra, Podólogo, Psiquiatra, Psicólogo clínico, 
+Psicoterapeuta, Radiólogo, Reumatólogo, Sexólogo, 
+Terapeuta ocupacional, Traumatólogo, Urólogo
+```
+
+## 📋 Campos de Perfil (Profile Service)
+
+### Campos Requeridos
+- `firstName` (string, 2-50 caracteres) - Se guarda en BD
+- `lastName` (string, 2-50 caracteres) - Se guarda en BD
+
+### Campos Opcionales
+- `dateOfBirth` (date) - Se guarda en BD
+- `gender` (enum: "male", "female", "other") - Se guarda en BD
+- `phone` (string, formato internacional) - Se guarda en BD
+- `address` (text) - Se guarda en BD
+- `city` (string, máximo 100 caracteres) - Se guarda en BD
+- `state` (string, máximo 100 caracteres) - Se guarda en BD
+- `country` (string, máximo 100 caracteres) - Se guarda en BD
+- `postalCode` (string, máximo 20 caracteres) - Se guarda en BD
+- `bio` (text) - Se guarda en BD
+- `profilePicture` (file, jpeg/jpg/png/gif, máximo 5MB) - Se guarda en BD
+
+## 🔧 Desarrollo
+
+### Estructura de Directorios
+```
+doctorapp-backend/
+├── services/
+│   ├── auth-service/
+│   │   ├── src/
+│   │   │   ├── controllers/
+│   │   │   ├── middlewares/
+│   │   │   ├── models/
+│   │   │   ├── routes/
+│   │   │   ├── services/
+│   │   │   └── utils/
+│   │   └── test/
+│   └── profile-service/
+│       ├── src/
+│       │   ├── controllers/
+│       │   ├── middlewares/
+│       │   ├── models/
+│       │   ├── routes/
+│       │   └── services/
+│       └── test/
+├── request/
+│   ├── auth.rest
+│   ├── profile.rest
+│   └── complete-flow.rest
+└── docker-compose.yml
+```
+
+### Comandos de Desarrollo
+
+```bash
+# Ejecutar tests del auth service
+cd services/auth-service
+npm test
+
+# Ejecutar tests del profile service
+cd services/profile-service
+npm test
+
+# Ejecutar en modo desarrollo
+cd services/auth-service
+npm run dev
+
+cd services/profile-service
+npm run dev
+```
+
+## 🐳 Docker
+
+### Construir imágenes
+```bash
+docker-compose build
+```
+
+### Ejecutar servicios
+```bash
+docker-compose up -d
+```
+
+### Ver logs
+```bash
+docker-compose logs -f auth-service
+docker-compose logs -f profile-service
+```
+
+### Detener servicios
+```bash
+docker-compose down
+```
+
+## 📝 Notas Importantes
+
+1. **Separación de Responsabilidades**: 
+   - Auth Service: Solo maneja autenticación y datos básicos (email, password, role)
+   - Profile Service: Maneja toda la información personal del usuario
+
+2. **Seguridad**: Todos los endpoints de perfil requieren autenticación JWT
+
+3. **Validación**: Los datos se validan tanto en el frontend como en el backend
+
+4. **Soft Delete**: Los perfiles eliminados se marcan como inactivos pero no se eliminan físicamente
+
+5. **Paginación**: Las listas incluyen información de paginación
+
+6. **Búsqueda**: La búsqueda es insensible a mayúsculas/minúsculas
+
+## 🤝 Contribución
+
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para detalles.

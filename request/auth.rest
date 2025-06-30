@@ -1,24 +1,17 @@
-### 🔐 Register doctor
+### 🔐 Register doctor (only saves email, password, role in DB)
 POST {{baseUrlAuth}}/register
 Content-Type: application/json
 
 {
-  "firstName": "Alejandro",
-  "lastName":  "Sanchez",
   "email":     "{{email}}",
   "password":  "{{pwd}}",
-  "specialty": "Pediatra",
-  "phone":     "1234567",
-  "role":      "doctor",
-  "organization": "Clínica Santa María"
+  "role":      "doctor"
 }
 
-
-### ✔ Verify e-mail  (put here token copy of register)
-@verifyToken = d68bfd679b57434307b7a5a94451779d8949b9ae6ae28d2e68fae4e01a5a59ca
+### ✔ Verify e-mail (put here token copy of register)
+@verifyToken = 3a0d51b714daa24a8c8b92813f93662f1549771b7caf01cd34d5655765375038
 
 GET {{baseUrlAuth}}/verify-email?token={{verifyToken}}
-
 
 ### 🔑 Login doctor
 POST {{baseUrlAuth}}/login
@@ -29,9 +22,6 @@ Content-Type: application/json
   "password":  "{{pwd}}"
 }
 
-### 👤 Get profile protected
-GET {{baseUrlAuth}}/profile
-Authorization: Bearer {{token}}
 ### 🕟 Forgot password
 POST {{baseUrlAuth}}/forgot-password
 Content-Type: application/json
@@ -40,8 +30,8 @@ Content-Type: application/json
   "email": "{{email}}"
 }
 
-### 🔄 Reset contraseña  (copia token de e-mail de reset)
-@resetToken = 236250c7958f136e082ee9da3ae3e5abc9b676e129cc97aeb8532cd660ccf645
+### 🔄 Reset password (copy token from reset email)
+@resetToken = db8fb40caeed439ff243493abbc514e15e17b790e132c8559e27c19d25d96048
 
 POST {{baseUrlAuth}}/reset-password
 Content-Type: application/json
@@ -51,111 +41,56 @@ Content-Type: application/json
   "password": "NuevaClaveSegura123"
 }
 
-### 📋 Obtener permisos del usuario actual
+### 📋 Get current user permissions
 GET {{baseUrlPermissions}}/my-permissions
 Authorization: Bearer {{token}}
 
-### ✅ Verificar permiso específico - canViewPatients (debe ser true para doctor)
+### ✅ Check specific permission - canViewPatients (should be true for doctor)
 GET {{baseUrlPermissions}}/check/canViewPatients
 Authorization: Bearer {{token}}
 
-### ❌ Verificar permiso específico - canManageSystem (debe ser false para doctor)
+### ❌ Check specific permission - canManageSystem (should be false for doctor)
 GET {{baseUrlPermissions}}/check/canManageSystem
 Authorization: Bearer {{token}}
 
-### ✅ Verificar permiso específico - canCreateAppointments (debe ser true para doctor)
-GET {{baseUrlPermissions}}/check/canCreateAppointments
-Authorization: Bearer {{token}}
-### ✅ Verificar permiso específico - canPrescribeMedication (debe ser true para doctor)
-GET {{baseUrlPermissions}}/check/canPrescribeMedication
-Authorization: Bearer {{token}}
-
-### 👤 Obtener información completa del usuario con permisos
+### 👤 Get complete user information with permissions
 GET {{baseUrlPermissions}}/user-info
 Authorization: Bearer {{token}}
 
-### 🚫 Obtener todos los roles (debe fallar - solo para admin)
-GET {{baseUrlPermissions}}/all-roles
-Authorization: Bearer {{token}}
-
-### 🔐 ========================================
-### 🔐 PRUEBAS DE ERRORES Y CASOS LÍMITE
-### 🔐 ========================================
-
-### 🚫 Probar endpoint sin token (debe fallar con 401)
+### 🚫 Test endpoint without token (should fail with 401)
 GET {{baseUrlPermissions}}/my-permissions
 
-### 🚫 Probar endpoint con token inválido (debe fallar con 403)
+### 🚫 Test endpoint with invalid token (should fail with 403)
 GET {{baseUrlPermissions}}/my-permissions
 Authorization: Bearer token_invalido
 
-### 🚫 Verificar permiso inexistente (debe devolver false)
+### 🚫 Check non-existent permission (should return false)
 GET {{baseUrlPermissions}}/check/permiso_inexistente
 Authorization: Bearer {{token}}
-### 🔐 ========================================
-### 🔐 PRUEBAS DE PERMISOS ESPECÍFICOS DEL DOCTOR
-### 🔐 ========================================
 
-### ✅ Verificar canViewProfile (debe ser true)
-GET {{baseUrlPermissions}}/check/canViewProfile
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM0ODg0ZTI4LWQ4M2MtNDcyYi1hOWFhLTA5Nzk5ODRiOWU3MSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NTExNzIwMDIsImV4cCI6MTc1MTM0NDgwMn0.po0ED5wpaJ8Df2fHpne_X92rfZHJ26izxJGVF3GdXHo
+### 🚫 Test invalid registration - missing required fields
+POST {{baseUrlAuth}}/register
+Content-Type: application/json
 
-### ✅ Verificar canUpdateProfile (debe ser true)
-GET {{baseUrlPermissions}}/check/canUpdateProfile
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM0ODg0ZTI4LWQ4M2MtNDcyYi1hOWFhLTA5Nzk5ODRiOWU3MSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NTExNzIwMDIsImV4cCI6MTc1MTM0NDgwMn0.po0ED5wpaJ8Df2fHpne_X92rfZHJ26izxJGVF3GdXHo
+{
+  "email": "invalid-email"
+}
 
-### ✅ Verificar canViewAppointments (debe ser true)
-GET {{baseUrlPermissions}}/check/canViewAppointments
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM0ODg0ZTI4LWQ4M2MtNDcyYi1hOWFhLTA5Nzk5ODRiOWU3MSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NTExNzIwMDIsImV4cCI6MTc1MTM0NDgwMn0.po0ED5wpaJ8Df2fHpne_X92rfZHJ26izxJGVF3GdXHo
+### 🚫 Test invalid registration - missing password
+POST {{baseUrlAuth}}/register
+Content-Type: application/json
 
-### ✅ Verificar canUpdateAppointments (debe ser true)
-GET {{baseUrlPermissions}}/check/canUpdateAppointments
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM0ODg0ZTI4LWQ4M2MtNDcyYi1hOWFhLTA5Nzk5ODRiOWU3MSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NTExNzIwMDIsImV4cCI6MTc1MTM0NDgwMn0.po0ED5wpaJ8Df2fHpne_X92rfZHJ26izxJGVF3GdXHo
+{
+  "email": "alejandro@example.com",
+  "password": "123"
+}
 
-### ✅ Verificar canDeleteAppointments (debe ser true)
-GET {{baseUrlPermissions}}/check/canDeleteAppointments
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM0ODg0ZTI4LWQ4M2MtNDcyYi1hOWFhLTA5Nzk5ODRiOWU3MSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NTExNzIwMDIsImV4cCI6MTc1MTM0NDgwMn0.po0ED5wpaJ8Df2fHpne_X92rfZHJ26izxJGVF3GdXHo
+### 🚫 Test invalid registration - invalid role type
+POST {{baseUrlAuth}}/register
+Content-Type: application/json
 
-### ✅ Verificar canViewMedicalRecords (debe ser true)
-GET {{baseUrlPermissions}}/check/canViewMedicalRecords
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM0ODg0ZTI4LWQ4M2MtNDcyYi1hOWFhLTA5Nzk5ODRiOWU3MSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NTExNzIwMDIsImV4cCI6MTc1MTM0NDgwMn0.po0ED5wpaJ8Df2fHpne_X92rfZHJ26izxJGVF3GdXHo
-
-### ✅ Verificar canUpdateMedicalRecords (debe ser true)
-GET {{baseUrlPermissions}}/check/canUpdateMedicalRecords
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM0ODg0ZTI4LWQ4M2MtNDcyYi1hOWFhLTA5Nzk5ODRiOWU3MSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NTExNzIwMDIsImV4cCI6MTc1MTM0NDgwMn0.po0ED5wpaJ8Df2fHpne_X92rfZHJ26izxJGVF3GdXHo
-
-### ✅ Verificar canViewSchedule (debe ser true)
-GET {{baseUrlPermissions}}/check/canViewSchedule
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM0ODg0ZTI4LWQ4M2MtNDcyYi1hOWFhLTA5Nzk5ODRiOWU3MSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NTExNzIwMDIsImV4cCI6MTc1MTM0NDgwMn0.po0ED5wpaJ8Df2fHpne_X92rfZHJ26izxJGVF3GdXHo
-
-### ✅ Verificar canUpdateSchedule (debe ser true)
-GET {{baseUrlPermissions}}/check/canUpdateSchedule
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM0ODg0ZTI4LWQ4M2MtNDcyYi1hOWFhLTA5Nzk5ODRiOWU3MSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NTExNzIwMDIsImV4cCI6MTc1MTM0NDgwMn0.po0ED5wpaJ8Df2fHpne_X92rfZHJ26izxJGVF3GdXHo
-
-### ✅ Verificar canViewReports (debe ser true)
-GET {{baseUrlPermissions}}/check/canViewReports
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM0ODg0ZTI4LWQ4M2MtNDcyYi1hOWFhLTA5Nzk5ODRiOWU3MSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NTExNzIwMDIsImV4cCI6MTc1MTM0NDgwMn0.po0ED5wpaJ8Df2fHpne_X92rfZHJ26izxJGVF3GdXHo
-
-### ✅ Verificar canExportData (debe ser true)
-GET {{baseUrlPermissions}}/check/canExportData
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM0ODg0ZTI4LWQ4M2MtNDcyYi1hOWFhLTA5Nzk5ODRiOWU3MSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NTExNzIwMDIsImV4cCI6MTc1MTM0NDgwMn0.po0ED5wpaJ8Df2fHpne_X92rfZHJ26izxJGVF3GdXHo
-
-### 🔐 ========================================
-### 🔐 PRUEBAS DE PERMISOS NO DISPONIBLES PARA DOCTOR
-### 🔐 ========================================
-
-### ❌ Verificar canViewAllUsers (debe ser false)
-GET {{baseUrlPermissions}}/check/canViewAllUsers
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM0ODg0ZTI4LWQ4M2MtNDcyYi1hOWFhLTA5Nzk5ODRiOWU3MSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NTExNzIwMDIsImV4cCI6MTc1MTM0NDgwMn0.po0ED5wpaJ8Df2fHpne_X92rfZHJ26izxJGVF3GdXHo
-
-### ❌ Verificar canCreateUsers (debe ser false)
-GET {{baseUrlPermissions}}/check/canCreateUsers
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM0ODg0ZTI4LWQ4M2MtNDcyYi1hOWFhLTA5Nzk5ODRiOWU3MSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NTExNzIwMDIsImV4cCI6MTc1MTM0NDgwMn0.po0ED5wpaJ8Df2fHpne_X92rfZHJ26izxJGVF3GdXHo
-
-### ❌ Verificar canUpdateUsers (debe ser false)
-GET {{baseUrlPermissions}}/check/canUpdateUsers
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM0ODg0ZTI4LWQ4M2MtNDcyYi1hOWFhLTA5Nzk5ODRiOWU3MSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NTExNzIwMDIsImV4cCI6MTc1MTM0NDgwMn0.po0ED5wpaJ8Df2fHpne_X92rfZHJ26izxJGVF3GdXHo
-
-### ❌ Verificar canDeleteUsers (debe ser false)
-GET {{baseUrlPermissions}}/check/canDeleteUsers
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM0ODg0ZTI4LWQ4M2MtNDcyYi1hOWFhLTA5Nzk5ODRiOWU3MSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NTExNzIwMDIsImV4cCI6MTc1MTM0NDgwMn0.po0ED5wpaJ8Df2fHpne_X92rfZHJ26izxJGVF3GdXHo
+{
+  "email": "alejandro@example.com",
+  "password": "password123",
+  "role": 123
+}
